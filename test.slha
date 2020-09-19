@@ -1,0 +1,70 @@
+ # some preamble
+BLOCK SPINFO
+     1   FeynHiggs
+     3  built on Jul 10, 2016
+     2   2.11.3
+BLOCK MODSEL
+         1                  0   # Model
+         2                  1   # GridPts
+         3                  0   # Content
+         4                  0   # RPV
+         5                  0   # CPV
+         6                  0   # FV
+BLOCK SMINPUTS
+         1     1.27940000E+02   # invAlfaMZ
+         2     1.16637000E-05   # GF
+         3     1.18500000E-01   # AlfasMZ
+         4     9.11877663E+01   # MZ
+         5     4.18000000E+00   # Mb
+         6     1.73430715E+02   # Mt
+         7     1.77700000E+00   # Mtau
+BLOCK MINPAR
+         3     3.64482636E+01   # TB
+Block msoft Q=4.64649125e+02 # MSSM DRbar SUSY breaking parameters
+         1 1.01353084e+02 # M_1(Q)
+         2 1.91513233e+02 # M_2(Q)
+         3 5.86951218e+02 # M_3(Q)
+         21 3.26601234e+04 # mH1^2(Q)
+         22 -1.29761234e+05 # mH2^2(Q)
+         31 1.99111011e+02 # meL(Q)
+         32 1.99108212e+02 # mmuL(Q)
+         33 1.98291304e+02 # mtauL(Q)
+         34 1.38808102e+02 # meR(Q)
+         35 1.38800070e+02 # mmuR(Q)
+         36 1.36441129e+02 # mtauR(Q)
+         41 5.51249170e+02 # mqL1(Q)
+         42 5.51173571e+02 # mqL2(Q)
+         43 4.99839787e+02 # mqL3(Q)
+         44 5.29285249e+02 # muR(Q)
+         45 5.29130286e+02 # mcR(Q)
+         46 4.19025924e+02 # mtR(Q)
+         47 5.26529352e+02 # mdR(Q)
+         48 5.26527025e+02 # msR(Q)
+         49 5.23183913e+02 # mbR(Q)
+# test comment goes here
+BLOCK NMIX
+     1   1     9.98939304E-01   # ZNeu(1,1)
+     1   2    -2.71646701E-02   # ZNeu(1,2)
+     1   3     3.63823179E-02   # ZNeu(1,3)
+     1   4    -7.65987384E-03   # ZNeu(1,4)
+     2   1     2.94271286E-02   # ZNeu(2,1)
+     2   2     9.97659275E-01   # ZNeu(2,2)
+     2   3    -6.02722552E-02   # ZNeu(2,3)
+     2   4     1.33143194E-02   # ZNeu(2,4)
+     3   1    -1.93706352E-02   # ZNeu(3,1)
+     3   2     3.37837171E-02   # ZNeu(3,2)
+     3   3     7.05965968E-01   # ZNeu(3,3)
+     3   4     7.07174300E-01   # ZNeu(3,4)
+     4   1    -2.96494286E-02   # ZNeu(4,1)
+     4   2     5.28839570E-02   # ZNeu(4,2)
+     4   3     7.04737990E-01   # ZNeu(4,3)
+     4   4    -7.06872382E-01   # ZNeu(4,4)
+DECAY   1000021     1.97798596E+02   # Gamma(gluino)
+     1.26467724E-01   2        -5   1000005   # BR(gluino -> Bottom sbottom1)
+     1.26467724E-01   2  -1000005         5   # BR(gluino -> Sbottom1 bottom)
+     1.21693497E-01   2        -5   2000005   # BR(gluino -> Bottom sbottom2)
+     1.21693497E-01   2  -2000005         5   # BR(gluino -> Sbottom2 bottom)
+     1.45213896E-01   2        -6   1000006   # BR(gluino -> Top stop1)
+     1.45213896E-01   2  -1000006         6   # BR(gluino -> Stop1 top)
+     1.06624883E-01   2        -6   2000006   # BR(gluino -> Top stop2)
+     1.06624883E-01   2  -2000006         6   # BR(gluino -> Stop2 top)
