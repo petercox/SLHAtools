@@ -1,125 +1,145 @@
-"""Module for reading/writing SLHA files.
+##################################################
+"""SLHAtools: Module for reading/writing SLHA files.
 
 Defines SLHAdata class for storing/manipulating SLHA data. 
 
-Author: Peter Cox 
-Last Update: 5 Sep 2018
+Copyright 2017-2020 Peter Cox
 """
 
-__version__ = 1.1
 __author__ = "Peter Cox"
+__email__ = "peter.cox@unimelb.edu.au"
+__version__ = 1.1
+
+##################################################
 
 import sys
 from collections import OrderedDict
 from contextlib import contextmanager
 
-###############################################
+##################################################
 
 # Commonly used particle IDs for accessing decay information
-SM_pid = {'d':1, 'u':2, 's':3, 'c':4, 'b':5, 't':6,
+_SM_pid = {'d':1, 'u':2, 's':3, 'c':4, 'b':5, 't':6,
  		  'e':11, 've':12, 'mu':13, 'vm':14, 'tau':15, 'vt':16,
  		  'g':21, 'a':22, 'Z':23, 'W':24}
 
-Higgs_pid = {'h': 25, 'H0': 35, 'A0':36, 'H+':37}
+_Higgs_pid = {'h': 25, 'H0': 35, 'A0':36, 'H+':37}
 
-MSSM_pid = {'~dL':1000001, '~uL':1000002, '~sL':1000003, '~cL':1000004, '~b1':1000005,'~t1':1000006,
+_MSSM_pid = {'~dL':1000001, '~uL':1000002, '~sL':1000003, '~cL':1000004, '~b1':1000005,'~t1':1000006,
 			'~eL':1000011, '~ve':1000012, '~muL':1000013, '~vmu':1000014, '~tau1':1000015, '~vt':1000016,
 			'~dR':2000001, '~uR':2000002, '~sR':2000003, '~cR':2000004, '~b2':2000005,'~t2':2000006,
 			'~eR':2000011, '~veR':2000012, '~muR':2000013, '~vmuR':2000014, '~tau2':2000015, '~vtR':2000016,
 			'~g':1000021, '~N1':1000022, '~N2':1000023, '~C1':1000024, '~N3':1000025, '~N4':1000035, '~C2':1000037, '~G':1000039}
 
 PIDs = {}
-PIDs.update(SM_pid)
-PIDs.update(Higgs_pid)
-PIDs.update(MSSM_pid)
+PIDs.update(_SM_pid)
+PIDs.update(_Higgs_pid)
+PIDs.update(_MSSM_pid)
 
-###############################################
+##################################################
 
 class SLHAdata:
 	"""Class to store SLHA data and provide get/set functionality."""
 
-	def __init__(self, data=None):
+	def __init__(self):
 		self.preamble = ''
-		self.blocks = OrderedDict()
-		self.decays = OrderedDict()
+		self._blocks = OrderedDict()
+		self._decays = OrderedDict()
 
 	def __str__(self):
-		return '<SLHAdata: {} blocks, {} decays>'.format(len(self.blocks), len(self.decays))
+		return '<SLHAdata: {} blocks, {} decays>'.format(len(self._blocks), len(self._decays))
 
 	def Blocks(self):
-		return self.blocks.keys()
+		"""Returns a list of block names."""
+		return list(self._blocks)
 
 	def Decays(self):
-		return self.decays.keys()
+		"""Returns a list of particle IDs that have decay information."""
+		return list(self._decays)
 
 	def FindBlock(self, blockname):
 		"""Finds first block that matches blockname."""
 		
-		for block in self.blocks.keys():
+		for block in self._blocks.keys():
 			if block.startswith(blockname):
 				return block
 
 	def GetBlock(self, blockname):
+		"""Returns a block as an OrderedDict."""
+
 		try:
-			return self.blocks[blockname]['data']
+			return self._blocks[blockname]['data']
 		except KeyError:
-			print "No block named '{}'!".format(blockname)
+			print("No block named '{}'!".format(blockname))
 			return None
 
 	def GetBlockString(self, blockname):
+		"""Returns a block as a string."""
+
 		try:
-			return _BlockToString(self.blocks[blockname])
+			return _BlockToString(self._blocks[blockname])
 		except KeyError:
-			print "No block named '{}'!".format(blockname)
+			print("No block named '{}'!".format(blockname))
 			return ''
 
 	def GetValue(self, block, id):
+		"""Returns the value of an entry in a block."""
+
 		try:
-			return self.blocks[block]['data'][id]['value']
+			return self._blocks[block]['data'][id]['value']
 		except KeyError:
-			print "No parameter '{}' in block '{}'!".format(id, block)
+			print("No parameter '{}' in block '{}'!".format(id, block))
 			return None
 
 	def SetValue(self, block, id, value):
+		"""Sets the value of an entry in a block."""
+
 		try:
-			self.blocks[block]['data'][id]['value'] = value
+			self._blocks[block]['data'][id]['value'] = value
 		except KeyError:
-			print "No parameter '{}' in block '{}'!".format(id, block)
+			print("No parameter '{}' in block '{}'!".format(id, block))
 			return 1
 		return 0
 
 	def GetDecay(self, particle):
+		"""Returns decay information for particle as an OrderedDict."""
+
 		pid = GetPID(particle)
 		try:
-			return self.decays[pid]['data']
+			return self._decays[pid]['data']
 		except KeyError:
-			print "No decays for particle '{}'.".format(pid)
+			print("No decays for particle '{}'.".format(pid))
 			return None
 
 	def GetDecayString(self, particle):
+		"""Returns decay information for particle as a string."""
+
 		pid = GetPID(particle)
 		try:
-			return _DecayToString(self.decays[pid])
+			return _DecayToString(self._decays[pid])
 		except KeyError:
-			print "No decays for particle '{}'.".format(pid)
+			print("No decays for particle '{}'.".format(pid))
 			return ''
 
 	def GetWidth(self, particle):
+		"""Returns decay width of particle."""
+
 		pid = GetPID(particle)
 		try:
-			return self.decays[pid]['width']
+			return self._decays[pid]['width']
 		except KeyError:
-			print "No decays for particle '{}'.".format(pid)
+			print("No decays for particle '{}'.".format(pid))
 			return None
 
 	def GetBR(self, particle, daughters):
+		"""Returns branching ratio for a given decay process."""
+
 		pid = GetPID(particle)
 		try:
-			return self.decays[pid]['data'][daughters]['BR']
+			return self._decays[pid]['data'][daughters]['BR']
 		except KeyError:
-			#print "Decay mode {} -> {} not found!".format(pid, daughters)
+			#print("Decay mode {} -> {} not found!".format(pid, daughters))
 			return 0.
-
 
 	def Write(self, SLHAfile=sys.stdout):
 		"""Write SLHA data.
@@ -132,28 +152,30 @@ class SLHAdata:
 			fSLHA.write(self.preamble + '\n')
 		
 			# Write blocks
-			for block in self.blocks.values():
+			for block in self._blocks.values():
 				fSLHA.write(_BlockToString(block) + '\n')
 				fSLHA.write(block['comments'] + '\n')
 
 			# Write decays 
-			for decay in self.decays.values():
+			for decay in self._decays.values():
 				fSLHA.write(_DecayToString(decay) + '\n')
 				fSLHA.write(decay['comments'] + '\n')
 
-###############################################
+##################################################
 
 def GetPID(particle):
+	"""Get particle ID from name."""
+
 	if isinstance(particle, str):
 		try:
 			return PIDs[particle]
 		except KeyError:
-			print "Particle '{}' is unknown.".format(particle)
+			print("Particle '{}' is unknown.".format(particle))
 			return None
 	else:
 		return particle
 
-###############################################
+##################################################
 
 def ReadSLHA(SLHAfile):
 	"""Read an SLHA file and return SLHAdata instance."""
@@ -171,9 +193,9 @@ def ReadSLHA(SLHAfile):
 				if data_type == None:
 					SLHA_data.preamble += (line + '\n')
 				elif data_type == 'B':
-					SLHA_data.blocks[block]['comments'] += (line + '\n')
+					SLHA_data._blocks[block]['comments'] += (line + '\n')
 				elif data_type == 'D':
-					SLHA_data.decays[pid]['comments'] += (line + '\n')
+					SLHA_data._decays[pid]['comments'] += (line + '\n')
 				continue
 
 			# Separate data and description
@@ -188,10 +210,10 @@ def ReadSLHA(SLHAfile):
 				data_type = 'B'
 				block = data.split(None,1)[1].strip()
 				try:
-					SLHA_data.blocks[block]
-					print "WARNING: multiple '{}' blocks. Only first will be kept!".format(block)
+					SLHA_data._blocks[block]
+					print("WARNING: multiple '{}' blocks. Only first will be kept!".format(block))
 				except KeyError:
-					SLHA_data.blocks[block] = {'name': block, 'description': description, 'comments': '', 'data': OrderedDict()}
+					SLHA_data._blocks[block] = {'name': block, 'description': description, 'comments': '', 'data': OrderedDict()}
 
 			# New decay
 			elif line.lower().startswith('decay'):
@@ -200,10 +222,10 @@ def ReadSLHA(SLHAfile):
 				pid = int(data[1])
 				width = float(data[2])
 				try:
-					SLHA_data.decays[pid]
-					print "WARNING: multiple decay tables for {}. Only first will be kept!".format(pid)
+					SLHA_data._decays[pid]
+					print("WARNING: multiple decay tables for {}. Only first will be kept!".format(pid))
 				except KeyError:
-					SLHA_data.decays[pid] = {'pid': pid, 'width': width, 'description': description, 'comments': '', 'data': OrderedDict()}
+					SLHA_data._decays[pid] = {'pid': pid, 'width': width, 'description': description, 'comments': '', 'data': OrderedDict()}
 
 			# Read block
 			# For entries with more than 2 columns, key is a tuple of all columns except last
@@ -229,10 +251,10 @@ def ReadSLHA(SLHAfile):
 				value = data[-1]
 
 				try:
-					SLHA_data.blocks[block]['data'][keys]
-					print "WARNING: repeat entries in block {}. Only first will be kept!".format(block)
+					SLHA_data._blocks[block]['data'][keys]
+					print("WARNING: repeat entries in block {}. Only first will be kept!".format(block))
 				except KeyError:
-					SLHA_data.blocks[block]['data'][keys] = {'key': keys, 'value': value, 'description': description, 'columns': columns}
+					SLHA_data._blocks[block]['data'][keys] = {'key': keys, 'value': value, 'description': description, 'columns': columns}
 
 			# Read decay
 			elif data_type == 'D':
@@ -245,14 +267,14 @@ def ReadSLHA(SLHAfile):
 				daughters = [int(d) for d in data[2:]]
 
 				try:
-					SLHA_data.decays[pid]['data'][tuple(daughters)]
-					print "WARNING: repeat entries in decay table for {}. Only first will be kept!".format(pid)
+					SLHA_data._decays[pid]['data'][tuple(daughters)]
+					print("WARNING: repeat entries in decay table for {}. Only first will be kept!".format(pid))
 				except KeyError:
-					SLHA_data.decays[pid]['data'][tuple(daughters)] = {'N-body': Nbody, 'daughters': tuple(daughters), 'BR': BR, 'description': description}
+					SLHA_data._decays[pid]['data'][tuple(daughters)] = {'N-body': Nbody, 'daughters': tuple(daughters), 'BR': BR, 'description': description}
 
 	return SLHA_data
 
-###############################################
+##################################################
 
 def _BlockToString(block):
 	"""Convert block to string for printing/writing."""
@@ -264,7 +286,7 @@ def _BlockToString(block):
 	for param in block['data'].values():
 		blockstring += '\n  '
 
-		if isinstance(param['key'], int) or isinstance(param['key'], basestring):
+		if isinstance(param['key'], int) or isinstance(param['key'], str):
 			blockstring += '{:<3}  '.format(param['key'])
 		else:
 			for k in param['key']:
@@ -277,7 +299,7 @@ def _BlockToString(block):
 
 	return blockstring
 
-###############################################
+##################################################
 
 def _DecayToString(decay):
 	"""Convert decay to string for printing/writing."""
@@ -297,7 +319,7 @@ def _DecayToString(decay):
 
 	return decaystring
 
-###############################################
+##################################################
 
 @contextmanager
 def _IOstream(file):
@@ -310,4 +332,4 @@ def _IOstream(file):
 		yield f
 		f.close()
 
-###############################################
+##################################################
