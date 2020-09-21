@@ -29,10 +29,10 @@ Python module for reading/writing SLHA files.
 **GetBlockString(blockname)**:
 		*Returns a block as a string.*
 
-**GetValue(block, id)**:
+**GetValue(block, entry)**:
 		*Returns the value of an entry in a block.*
 
-**SetValue(block, id, value)**:
+**SetValue(block, entry, value)**:
 		*Sets the value of an entry in a block.*
 
 **GetDecay(particle)**:
