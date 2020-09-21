@@ -12,39 +12,41 @@ Python module for reading/writing SLHA files.
 ## Class: SLHAdata
 *Class to store SLHA data and provide get/set functionality.*
 
-**Blocks(self)**:
+### Member functions
+
+**Blocks()**:
 		*Returns a list of block names.*
 
-**Decays(self)**:
+**Decays()**:
 		*Returns a list of particle IDs that have decay information.*
 
-**FindBlock(self, blockname)**:
+**FindBlock(blockname)**:
 		*Finds first block that matches blockname.*
     
-**GetBlock(self, blockname)**:
+**GetBlock(blockname)**:
 		*Returns a block as an OrderedDict.*
 
-**GetBlockString(self, blockname)**:
+**GetBlockString(blockname)**:
 		*Returns a block as a string.*
 
-**GetValue(self, block, id)**:
+**GetValue(block, id)**:
 		*Returns the value of an entry in a block.*
 
-**SetValue(self, block, id, value)**:
+**SetValue(block, id, value)**:
 		*Sets the value of an entry in a block.*
 
-**GetDecay(self, particle)**:
+**GetDecay(particle)**:
 		*Returns decay information for particle as an OrderedDict.*
 
-**GetDecayString(self, particle)**:
+**GetDecayString(particle)**:
 		*Returns decay information for particle as a string.*
 
-**GetWidth(self, particle)**:
+**GetWidth(particle)**:
 		*Returns decay width of particle.*
 
-**GetBR(self, particle, daughters)**:
+**GetBR(particle, daughters)**:
 		*Returns branching ratio for a given decay process.*
 
-**Write(self, SLHAfile=sys.stdout)**:
+**Write(SLHAfile=sys.stdout)**:
 		*Write SLHA data.*
 		*SLHAfile can be a filename, sys.stdout (default), or sys.stderr.*
