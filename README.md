@@ -49,4 +49,4 @@ Python module for reading/writing SLHA files.
 
 **Write(SLHAfile=sys.stdout)**\
 *Write SLHA data.*
-*SLHAfile can be a filename, sys.stdout (default), or sys.stderr.*
+*SLHAfile can be a filename or sys.stdout (default).*
